@@ -81,16 +81,20 @@ configuration. A positive result is not a hardware or playback guarantee.
 
 ## Supported platforms
 
-| Backend | Windows | Linux | macOS | Android API 28+ | Web / Wasm |
+| Backend | Windows | Linux | macOS | Android API 28+ | Web (wasm) |
 | --- | :---: | :---: | :---: | :---: | :---: |
 | Software: rav1d / opus-rs | ✅ | ✅ | ✅ | ✅ | — |
 | VideoToolbox | — | — | ✅ | — | — |
 | Media Foundation | ✅ | — | — | — | — |
 | MediaCodec | — | — | — | 🧪 | — |
 | VA-API | — | 🧪 | — | — | — |
-| Browser WebCodecs | — | — | — | — | ✅ |
+| NVDEC | | 📋 | | | |
+| WebCodecs | — | — | — | — | ✅ |
 
-✅ = Implemented backend path, not a tested-device certification.  
+✅ = Implemented backend path, not a tested-device certification.
+
+📋 = Planned.
+
 🧪 = Experimental; full target builds and real-device playback have not yet
 been verified.
 
@@ -145,17 +149,6 @@ The default **`hardware`** feature enables all four native backend features,
 | `media-foundation` | Windows | Media Foundation AV1 decoding. |
 | `media-codec` | Android | NDK MediaCodec AV1 decoding. |
 | `vaapi` | Linux | VA-API through cros-codecs and cros-libva. |
-
-For a local checkout, native software-only decoding can be selected with:
-
-```toml
-[dependencies]
-wcodecs = { path = "../wcodecs", default-features = false }
-```
-
-Add `features = ["vaapi"]` to select only VA-API, or omit
-`default-features = false` for default platform selection. On Wasm, feature
-selection does not replace browser WebCodecs with a native software decoder.
 
 `HardwareAcceleration::PreferSoftware` bypasses native platform video backends.
 `NoPreference` and `PreferHardware` try the applicable native backend, with
@@ -242,10 +235,6 @@ Linux VA-API requires libva, GBM, and DRM development libraries, pkg-config,
 and Clang/libclang. These also apply to default-feature Linux builds.
 Native x86 rav1d assembly builds require NASM. Android needs a configured NDK
 with the API 28+ bindings used by this crate.
-
-The extracted manifest still has `futures-lite.workspace = true` as a dev
-dependency. Replace it with an explicit version for a standalone checkout
-before running these commands. No minimum supported Rust version is declared.
 
 ```sh
 # Native software path.
