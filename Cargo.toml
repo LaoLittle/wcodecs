@@ -1,0 +1,73 @@
+[package]
+name = "wcodecs"
+description = "A cross-platform codecs API in Rust"
+version = "0.1.1"
+edition = "2024"
+authors = ["LaoLittle"]
+license = "MIT or APACHE-2.0"
+
+[dependencies]
+thiserror = "2"
+crossbeam-channel = "0.5"
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies.hiraku-opus]
+git = "https://github.com/Hiraku-Project/opus-rs.git"
+version = "0.1.32"
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies.hiraku-rav1d]
+git = "https://github.com/Hiraku-Project/rav1d.git"
+version = "1.1.1"
+
+[target.'cfg(target_family = "wasm")'.dependencies]
+js-sys = "0.3"
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+
+[target.'cfg(target_family = "wasm")'.dependencies.web-sys]
+version = "0.3"
+features = [
+    "CanvasRenderingContext2d",
+    "Document",
+    "HtmlCanvasElement",
+    "ImageData",
+    "PlaneLayout",
+    "VideoColorSpace",
+    "VideoFrame",
+    "VideoFrameCopyToOptions",
+    "VideoMatrixCoefficients",
+    "VideoPixelFormat",
+    "VideoTransferCharacteristics",
+    "Window",
+]
+
+[features]
+default = ["hardware"]
+hardware = ["video-toolbox" ,"media-foundation", "media-codec", "vaapi"]
+video-toolbox = []
+vaapi = ["dep:cros-codecs", "dep:cros-libva"]
+media-foundation = ["dep:windows"]
+media-codec = ["dep:ndk"]
+
+[target.'cfg(target_os = "android")'.dependencies.ndk]
+version = "0.9"
+optional = true
+default-features = false
+features = ["media", "api-level-28"]
+
+[dev-dependencies]
+futures-lite = "2"
+
+[target.'cfg(target_os = "windows")'.dependencies.windows]
+version = "0.62"
+optional = true
+features = ["Win32_Media_MediaFoundation", "Win32_System_Com", "Win32_System_Com_StructuredStorage"]
+
+[target.'cfg(target_os = "linux")'.dependencies.cros-codecs]
+version = "0.0.6"
+optional = true
+default-features = false
+features = ["vaapi"]
+
+[target.'cfg(target_os = "linux")'.dependencies.cros-libva]
+version = "0.0.12"
+optional = true
