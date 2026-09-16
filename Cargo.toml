@@ -2,9 +2,11 @@
 name = "wcodecs"
 description = "A cross-platform codecs API in Rust"
 version = "0.1.1"
+repository = "https://github.com/LaoLittle/wcodecs"
+readme = "README.md"
 edition = "2024"
 authors = ["LaoLittle"]
-license = "MIT or APACHE-2.0"
+license = "MIT OR Apache-2.0"
 
 [dependencies]
 thiserror = "2"
